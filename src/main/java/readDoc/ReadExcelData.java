@@ -15,6 +15,9 @@ public class ReadExcelData {
 	 * @param args
 	 * @throws IOException
 	 */
+	public ReadExcelData() {
+		String pathDownload;
+	}
 // выбрать столбец для чтения данных (для проверки/тестировниая)
 //	final int code = 0;    // код (строка)
 //	final int gpoupID = 2;   // ID группы  (число)
@@ -39,8 +42,8 @@ public class ReadExcelData {
 
 
 	String fileName = "Primer_raspisania.xlsx";
-//	String fileName = "fileToRead";
-//	private LinkedList<String> columnStrData;
+	//	String fileName = "fileToRead";
+	private LinkedList<String> columnStrData;
 
 	/**
 	 * * имя столбцов д/л group: groupid, groupcode,
@@ -60,28 +63,17 @@ public class ReadExcelData {
 //		exr.getTime(columnIndex);
 	}
 
-	private java.sql.Date columndataDateSql;
-	List<java.sql.Date> columnListDateSql;
-	private List<String> columndataStr;
 
-	/**
-	 * метод для построения таблицы из прчитанных данных и просмотра данных
-	 * Вопросы:
-	 * 1. формат даты считывается как ссылка
-	 */
-
-	/**
-	 * метод должен получить определённые номера колонок, вызвать метод, который обработает тип ячейки
-	 * и вернуть считанные данные
-	 */
-	public LinkedList<java.sql.Date> getDate(int columnIndex) {
+//
+private List <Date> columnDataDate;
+	public LinkedList<Date> getDate(int columnIndex) {
 		try {
 			File f = new File(fileName);
 			try (FileInputStream ios = new FileInputStream(f)) {
 				XSSFWorkbook workbook = new XSSFWorkbook(ios);
 				XSSFSheet sheet = workbook.getSheetAt(0);
 				Iterator<Row> rowIterator = sheet.iterator();
-				columnListDateSql = new LinkedList<>();
+				columnDataDate = new LinkedList<>();
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					Iterator<Cell> cellIterator = row.cellIterator();
@@ -93,8 +85,7 @@ public class ReadExcelData {
 								switch (cell.getCellType()) {
 									case Cell.CELL_TYPE_NUMERIC:
 										Date date = cell.getDateCellValue();
-										columndataDateSql = new java.sql.Date(date.getTime());
-										columnListDateSql.add(columndataDateSql);
+										columnDataDate.add(date);
 								}
 								break;
 							}
@@ -111,47 +102,98 @@ public class ReadExcelData {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return (LinkedList<java.sql.Date>) columnListDateSql;
+		return (LinkedList<Date>) columnDataDate;
 	}
 
-	public List<String> getString(int columnIndex) {
 
-		try {
-			File f = new File(fileName);
-			FileInputStream ios = new FileInputStream(f);
-			XSSFWorkbook workbook = new XSSFWorkbook(ios);
-			XSSFSheet sheet = workbook.getSheetAt(0);
-			Iterator<Row> rowIterator = sheet.iterator();
-			columndataStr = new LinkedList<>();
+		List<String> columnDataStr;
+		/*
+		метод возвращает строковые данные указанной колонки
+		 */
+		public List<String> getString (int columnIndex) {
 
-			while (rowIterator.hasNext()) {
-				Row row = rowIterator.next();
-				Iterator<Cell> cellIterator = row.cellIterator();
-				while (cellIterator.hasNext()) {
-					Cell cell = cellIterator.next();
+			try {
+				File f = new File(fileName);
+				FileInputStream ios = new FileInputStream(f);
+				XSSFWorkbook workbook = new XSSFWorkbook(ios);
+				XSSFSheet sheet = workbook.getSheetAt(0);
+				Iterator<Row> rowIterator = sheet.iterator();
+				columnDataStr = new LinkedList<>();
 
-					if (row.getRowNum() > 0) { //фильтрация заголовков столбцов
-						if (cell.getColumnIndex() == columnIndex) {// соответствие индекса столбца
-							switch (cell.getCellType()) {
-								case Cell.CELL_TYPE_STRING: // получение строчных данных
-									columndataStr.add(cell.getStringCellValue());
-									break;
+				while (rowIterator.hasNext()) {
+					Row row = rowIterator.next();
+					Iterator<Cell> cellIterator = row.cellIterator();
+					while (cellIterator.hasNext()) {
+						Cell cell = cellIterator.next();
+
+						if (row.getRowNum() > 0) { //фильтрация заголовков столбцов
+							if (cell.getColumnIndex() == columnIndex) {// соответствие индекса столбца
+								switch (cell.getCellType()) {
+									case Cell.CELL_TYPE_STRING: // получение строчных данных
+										columnDataStr.add(cell.getStringCellValue());
+										break;
+								}
 							}
 						}
 					}
 				}
-			}
-			ios.close();
-			/*			просмотр прочитанного			 */
-//			Iterator it = columndataStr.iterator();
+				ios.close();
+				/*			просмотр прочитанного			 */
+//			Iterator it = columnDataStr.iterator();
 //			while (it.hasNext()) {
 //				System.out.println(it.next());
 //			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return columnDataStr;
 		}
-		return columndataStr;
-	}
+
+	//	private java.sql.Date columndataDateSql;
+//	List<java.sql.Date> columnListDateSql;
+	/**
+	 * метод возвращает дфнные формата java.sql.Data
+	 *
+	 */
+//	public LinkedList<java.sql.Date> getDateSQL(int columnIndex) {
+//		try {
+//			File f = new File(fileName);
+//			try (FileInputStream ios = new FileInputStream(f)) {
+//				XSSFWorkbook workbook = new XSSFWorkbook(ios);
+//				XSSFSheet sheet = workbook.getSheetAt(0);
+//				Iterator<Row> rowIterator = sheet.iterator();
+//				columnListDateSql = new LinkedList<>();
+//				while (rowIterator.hasNext()) {
+//					Row row = rowIterator.next();
+//					Iterator<Cell> cellIterator = row.cellIterator();
+//					while (cellIterator.hasNext()) {
+//						Cell cell = cellIterator.next();
+//
+//						if (row.getRowNum() > 0) { //фильтрация заголовков столбцов
+//							if (cell.getColumnIndex() == columnIndex) {// соответствие индекса столбца
+//								switch (cell.getCellType()) {
+//									case Cell.CELL_TYPE_NUMERIC:
+//										Date date = cell.getDateCellValue();
+//										columndataDateSql = new java.sql.Date(date.getTime());
+//										columnListDateSql.add(columndataDateSql);
+//								}
+//								break;
+//							}
+//						}
+//					}
+//				}
+//			}
+////			ios.close();
+//			/*			просмотр прочитанного			 */
+////			Iterator it = columndataDate.iterator();
+////			while (it.hasNext()) {
+////				System.out.println(it.next());
+////			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return (LinkedList<java.sql.Date>) columnListDateSql;
+//	}
 
 
 //	public void buildingTable() {
@@ -179,4 +221,4 @@ public class ReadExcelData {
 //				"   " + itProg.next() + "     " + itDateSt);
 //		}
 //	}
-}
+	}
