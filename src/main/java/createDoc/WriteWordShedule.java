@@ -19,11 +19,11 @@ public class WriteWordShedule {
   public static void newDoc() {
       try {
           XWPFDocument document = new XWPFDocument();
-          FileOutputStream out = new FileOutputStream(new File("D:\\\\REPOSITORIES-2\\\\poidemo.docx"));
+          FileOutputStream out = new FileOutputStream(new File("D:\\\\temp\\\\poidemo.docx"));
 
           XWPFParagraph paragraph = document.createParagraph();
           XWPFRun run = paragraph.createRun();
-          run.setText("Hello! My Word!");
+          run.setText("Hello_Word!");
           document.write(out);
           out.close();
       } catch(Exception e) {

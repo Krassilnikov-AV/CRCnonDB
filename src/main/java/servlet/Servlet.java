@@ -21,6 +21,9 @@ public class Servlet extends HttpServlet {
 
 	static boolean newdoc;
 
+	void processRequest(HttpServlet request) {
+
+	}
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,14 +40,14 @@ public class Servlet extends HttpServlet {
 		if (request.getParameter("new_doc") != null) {
 			try {
 				XWPFDocument document = new XWPFDocument();
-				try (FileOutputStream out = new FileOutputStream(new File("D:\\REPOSITORIES-2\\po.docx"))) {
+				try (FileOutputStream out = new FileOutputStream(new File("D:\\temp\\po.docx"))) {
 
 					XWPFParagraph paragraph = document.createParagraph();
 					XWPFRun run = paragraph.createRun();
 					run.setText("Hello! My Word!");
 					document.write(out);
 				}
-			} catch(Exception e) {
+			} catch (Exception e) {
 				System.out.println("Документ не создан");
 				System.out.println(e);
 			}
@@ -52,7 +55,6 @@ public class Servlet extends HttpServlet {
 		request.getRequestDispatcher("/index.html").forward(request, response);  // позволяет не выкидывать новую
 		// страницу
 	}
-
 
 
 	private void download(InputStream fileStream, String name) {
