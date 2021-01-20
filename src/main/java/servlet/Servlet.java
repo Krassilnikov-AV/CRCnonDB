@@ -21,20 +21,22 @@ public class Servlet extends HttpServlet {
 
 	static boolean newdoc;
 
-	void processRequest(HttpServlet request) {
+	void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html;charset=UTF-8");
 
-	}
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");       // распознавание русского текста
+		Part part= null;
+		try {
+			part = request.getPart("file");
+		} catch (ServletException e) {
+			e.printStackTrace();
+		}
 
-//		Part part=request.getPart("file");
-//
-//		pathSave = request.getParameter("path");
-//		name = part.getSubmittedFileName();          // получить в классе чтения, создать в свойствах->читать и
-//		// получать в необходимом классе для чтения
-//		download(part.getInputStream(), name);
+		pathSave = request.getParameter("path");
+		name = part.getSubmittedFileName();          // получить в классе чтения, создать в свойствах->читать и
+		// получать в необходимом классе для чтения
+		download(part.getInputStream(), name);
 
 
 		if (request.getParameter("new_doc") != null) {
@@ -52,8 +54,14 @@ public class Servlet extends HttpServlet {
 				System.out.println(e);
 			}
 		}
-		request.getRequestDispatcher("/index.html").forward(request, response);  // позволяет не выкидывать новую
-		// страницу
+		request.getRequestDispatcher("/index.html").forward(request, response);  // не выкидывать новую страницу
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");       // распознавание русского текста
+		processRequest(request, response);
+
 	}
 
 
